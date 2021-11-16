@@ -208,10 +208,8 @@ function createBall() {
 			xpos = 200;
 			ypos=400;
 		}
-		else{
-			xpos = Math.floor(Math.random()*400);
-			ypos = Math.floor(Math.random()*560)+400
-		}
+		xpos = Math.floor(Math.random()*400);
+		ypos = Math.floor(Math.random()*560)+400;
 	}
 	spawn.play();
 	ball = game.add.sprite(xpos, ypos, 'ball');
