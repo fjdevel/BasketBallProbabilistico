@@ -195,7 +195,7 @@ function createBall() {
 	if (current_score === 0) {
 		xpos = 200;
 		ypos = 560;
-	} else {
+	}
 		if(current_score===1){
 			xpos = 100;
 			ypos = 500;
@@ -204,13 +204,15 @@ function createBall() {
 			xpos = 125;
 			ypos = 400;
 		}
-		if(current_score==4){
+		if(current_score===4){
 			xpos = 200;
 			ypos=400;
-		}
-		xpos = Math.floor(Math.random()*400);
+		}if(current_score>4){
+			xpos = Math.floor(Math.random()*400);
 		ypos = Math.floor(Math.random()*560)+400;
-	}
+		}
+		
+	
 	spawn.play();
 	ball = game.add.sprite(xpos, ypos, 'ball');
 	game.add.tween(ball.scale).from({x : 0.7, y : 0.7}, 100, Phaser.Easing.Linear.None, true, 0, 0, false);
