@@ -3,7 +3,10 @@
 <head>
 	<meta charset="UTF-8" />
     <title>Basketball Probabilistico</title>
+	
+	
 	<script type="text/javascript" src="js/phaser.min.js"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <style type="text/css">
         body {
             margin: 0;
@@ -22,14 +25,90 @@
 					text-align: center;
 				}
     </style>
+	<style>
+		span{
+			white-space: nowrap !important;
+			display: inline !important;
+		}
+	</style>
 </head>
+
+
 <body>
+	<div class="row">
+		<div class="col-md-4"><div id='game'></div></div>
+		<div class="col-md-6">
+			<div class="card">
+				<div class="card-body">
+					<div>
+						<div class="form-group row">
+							<label class="col-sm-6" for="estatura">ingrese la estatura del jugador en metros</label>
+							<div class="col-sm-6">
+								<input type="text" class="form-control" id="estatura">
+							  </div>
+						</div>
+						<div class="form-group row">
+							<div class="form-check col">
+								<input class="form-check-input col" type="checkbox" value="" id="experiencia">
+								<label class="form-check-label" for="experiencia">
+								  Tiene Experiencia
+								</label>
+							</div>
+						</div>
+		
+						  <div class="form-group row ">
+							  <label class="col-sm-4">Seleccione el área a calcular</label>
+							<div class="form-check col-sm-2">
+								<input class="form-check-input" type="radio" name="areas" id="area1" value="0">
+								<label class="form-check-label" for="area1">
+								  Área 1
+								</label>
+							  </div>
+							  <div class="form-check col-sm-2">
+								<input class="form-check-input" type="radio" name="areas" id="area2" value="1">
+								<label class="form-check-label" for="area2">
+								  Área 2
+								</label>
+							  </div>
+							  <div class="form-check col-sm-2">
+								<input class="form-check-input" type="radio" name="areas" id="area3" value="2">
+								<label class="form-check-label" for="area3">
+								  Área 3
+								</label>
+							  </div>
+							  <div class="form-check col-sm-2">
+								<input class="form-check-input" type="radio" name="areas" id="area3" value="3">
+								<label class="form-check-label" for="area4">
+									Área 4
+								</label>
+							  </div>
+						  </div>
+						  <button class="btn btn-success" onclick="calcularProbabilidad()">Calcular</button>
+						</div>
+				
+				</div>
+				<div class="card-header">
+					<h3>Resultados:</h3>
+					<p ><strong >¿Cuál es la probabilidad de encestar?  <span  id="probEncestar"></span></strong></p>
+					<p><strong>¿Cuál es la probabilidad de fallar? <span id="probFallar"></span</strong></p>
+					<p>¿Cuál es la probabilidad de que acierte el tiro y este en el área <span id="areaseleccionada"></span> ? <span id="probCon"></span></p>
+					<p>¿Cuál es la probabilidad de que tenga experiencia dada que mide menos de 1.7? <span id="probExperienciaEstatura"></span></p>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
 <script type="text/javascript">
-
-var game = new Phaser.Game(400, 625, Phaser.CANVAS, '', { preload: preload, create: create, update: update });
+var current_score = 0;
+var game = new Phaser.Game(400, 625, Phaser.CANVAS, 'game', { preload: preload, create: create, update: update });
 
 function preload() {
+	//Carga de imagenes
 
     game.load.image('ball', 'assets/images/ball.png');
     game.load.image('hoop', 'assets/images/hoop.png');
@@ -48,13 +127,12 @@ function preload() {
 		game.load.image('lose4', 'assets/images/lose4.png');
 		game.load.image('fondo','assets/images/cancha.png');
 }
-
+//Declaracion de variables
 var hoop,
  		left_rim,
  		right_rim,
  		ball,
  		front_rim,
- 		current_score = 0,
  		current_score_text,
  		high_score = 0,
  		high_score_text,
@@ -73,6 +151,8 @@ var moveInTween,
 		emojiName;
 
 var collisionGroup;
+
+//Creacion de graficos
 
 function create() {
 	
@@ -94,9 +174,6 @@ function create() {
 	spawn = game.add.audio('spawn');
 	
 	game.stage.backgroundColor = "#ffffff";
-	
-	
-	
 
 	// high_score_text = game.add.text(450, 25, 'High Score\n' + high_score, { font: 'Arial', fontSize: '32px', fill: '#000', align: 'center' });
 	current_score_text = game.add.text(187, 312, '', { font: 'Arial', fontSize: '40px', fill: '#000', align: 'center' }); // 300, 500
@@ -119,7 +196,7 @@ function create() {
 	right_rim.body.setCollisionGroup(collisionGroup);
 	right_rim.body.collides([collisionGroup]);
 
-	createBall();
+	//createBall();
 
 	cursors = game.input.keyboard.createCursorKeys();
 
@@ -128,9 +205,13 @@ function create() {
 
 
 	var instructions = document.createElement("span");
-	instructions.innerHTML = "Aqui van las instrucciones!";
+	instructions.innerHTML = "UNIVERSIDAD CENTROAMERICANA JOSE SIMEON CAÑAS PROYECTO MATEMATICA DISCRETA 2";
 	document.body.appendChild(instructions);
+
+
 }
+
+//Verificacion de tiro exitoso o fallido
 
 function update() {
 
@@ -189,28 +270,37 @@ function hitRim() {
 
 }
 
+
+//Posicionamiento del balon y calculos
 function createBall() {
 
 	var xpos,ypos;
-	if (current_score === 0) {
-		xpos = 200;
-		ypos = 560;
-	}
-		if(current_score===1){
-			xpos = 100;
+	switch (current_score) {
+		//Posicion Inicial
+		case 0:
+			xpos = 200;
+			ypos = 560;
+			break;
+
+		case 1:
+			xpos = 120;
 			ypos = 500;
-		}
-		if(current_score===3){
+			break;
+		case 2:
 			xpos = 125;
 			ypos = 400;
-		}
-		if(current_score===4){
+			break;
+		case 3:
 			xpos = 200;
 			ypos=400;
-		}if(current_score>4){
-			xpos = Math.floor(Math.random()*400);
-		ypos = Math.floor(Math.random()*560)+400;
-		}
+			break;
+		default:
+			break;
+	}
+	if(current_score >= 4){
+		xpos = Math.floor(Math.random()*300);
+		ypos = Math.floor(Math.random()*500)+400;
+	}
 		
 	
 	spawn.play();
@@ -250,7 +340,7 @@ function release(pointer) {
 
 		if (end_location[1] < start_location[1]) {
 			var slope = [end_location[0] - start_location[0], end_location[1] - start_location[1]];
-			var x_traj = -2300 * slope[0] / slope[1];
+			var x_traj = -300 * slope[0] / slope[1];
 			launch(x_traj);
 		}
 	}
@@ -276,6 +366,60 @@ function launch(x_traj) {
 }
 
 </script>
+<script>
+	function calcularProbabilidad(){
+		var estatura = $('#estatura').val();
+		var experiencia = $('#experiencia').prop('checked');
+		var area = $("input[name='areas']:checked").val();
 
+		var probEncestar=0,ProbFallar=0,ProbCon=0,a,ponA=0.1,ponB=0.15,ponC=0.35,ponD=0.4,ponEncestar,ponFallar,probExpeEstatura;
+
+		probEncestar += 0.3*0.8*((ponA*0.9)+(ponB*0.85)+(ponC*0.8)+(ponD*0.6));
+		probEncestar += 0.3*0.2*((ponA*0.8)+(ponB*0.7)+(ponC*0.6)+(ponD*0.5));
+		probEncestar += 0.7*0.8*((ponA*0.9)+(ponB*0.85)+(ponC*0.8)+(ponD*0.6));
+		probEncestar += 0.7*0.2*((ponA*0.8)+(ponB*0.7)+(ponC*0.6)+(ponD*0.5));
+
+		ProbFallar = 1-probEncestar;
+
+		if(area==0){
+			ProbCon = 0.3*0.8*ponA*0.9+0.3*0.2*ponA*0.8+0.7*0.8*ponA*0.9+0.7*0.2*ponA*0.8;
+			current_score = 0;
+			
+			createBall();
+			$('#areaseleccionada').html("A")
+		}
+		if(area==1){
+			ProbCon = 0.3*0.8*ponB*0.85+0.3*0.2*ponB*0.7+0.7*0.8*ponB*0.85+0.7*0.2*ponB*0.7;
+			current_score = 1;
+			createBall();
+			$('#areaseleccionada').html("B")
+		}
+		if(area==2){
+			ProbCon = 0.3*0.8*ponC*0.8+0.3*0.2*ponC*0.6+0.7*0.8*ponC*0.8+0.7*0.2*ponC*0.6;
+			current_score = 2;
+			createBall();
+			$('#areaseleccionada').html("C")
+		}
+		if(area==3){
+			ProbCon = 0.3*0.8*ponD*0.6+0.3*0.2*ponD*0.5+0.7*0.8*ponD*0.6+0.7*0.2*ponD*0.5;
+			current_score = 3;
+			createBall();
+			$('#areaseleccionada').html("D")
+		}
+		if(estatura>=1.7){
+			$('#probExperienciaEstatura').html("No posee una altura menor a 1.7");
+		}else{
+			probExpeEstatura = 0.7*0.8 *1.25;
+			$('#probExperienciaEstatura').html(probExpeEstatura);
+
+		}
+		
+		
+		$('#probEncestar').html(probEncestar);
+		$('#probFallar').html(ProbFallar);
+		$('#probCon').html(ProbCon);
+		
+	}
+</script>
 </body>
 </html>
