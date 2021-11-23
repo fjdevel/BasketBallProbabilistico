@@ -91,8 +91,10 @@
 					<h3>Resultados:</h3>
 					<p ><strong >¿Cuál es la probabilidad de encestar?  <span  id="probEncestar"></span></strong></p>
 					<p><strong>¿Cuál es la probabilidad de fallar? <span id="probFallar"></span</strong></p>
-					<p>¿Cuál es la probabilidad de que acierte el tiro y este en el área <span id="areaseleccionada"></span> ? <span id="probCon"></span></p>
+					<p>¿Cuál es la probabilidad de que acierte el tiro y este en el área <span class="areaseleccionada"></span> ? <span id="probCon"></span></p>
 					<p>¿Cuál es la probabilidad de que tenga experiencia dada que mide menos de 1.7? <span id="probExperienciaEstatura"></span></p>
+					<p>¿Cuál es la probabilidad de que este en el área <span class="areaseleccionada"></span> dado que encesto? <span id="probAreaEncesto"></span></p>
+					<p>¿Cuál es la probabilidad de que haya fallado dado que no tiene experiencia? <span id="probFalladoExperiencia"></span></p>
 				</div>
 			</div>
 		</div>
@@ -251,7 +253,7 @@ function update() {
 	if (ball && ball.body.y > 1200) {
 		game.physics.p2.gravity.y = 0;
 		ball.kill();
-		createBall();
+		//createBall();
 	}
 
 }
@@ -273,7 +275,11 @@ function hitRim() {
 
 //Posicionamiento del balon y calculos
 function createBall() {
-
+	if(ball)
+	{
+		ball.destroy(true);
+		ball = null;
+	}
 	var xpos,ypos;
 	switch (current_score) {
 		//Posicion Inicial
@@ -373,7 +379,7 @@ function launch(x_traj) {
 		var area = $("input[name='areas']:checked").val();
 
 		var probEncestar=0,ProbFallar=0,ProbCon=0,a,ponA=0.1,ponB=0.15,ponC=0.35,ponD=0.4,ponEncestar,ponFallar,probExpeEstatura;
-
+		var ProbaAreaEncestar=0,ProbaFalloExp=0,probAcumFallo=0;
 		probEncestar += 0.3*0.8*((ponA*0.9)+(ponB*0.85)+(ponC*0.8)+(ponD*0.6));
 		probEncestar += 0.3*0.2*((ponA*0.8)+(ponB*0.7)+(ponC*0.6)+(ponD*0.5));
 		probEncestar += 0.7*0.8*((ponA*0.9)+(ponB*0.85)+(ponC*0.8)+(ponD*0.6));
@@ -384,27 +390,38 @@ function launch(x_traj) {
 		if(area==0){
 			ProbCon = 0.3*0.8*ponA*0.9+0.3*0.2*ponA*0.8+0.7*0.8*ponA*0.9+0.7*0.2*ponA*0.8;
 			current_score = 0;
-			
+
+			ProbaAreaEncestar = ponA*ProbCon/probEncestar;
+			$('#probAreaEncesto').html(ProbaAreaEncestar);
 			createBall();
-			$('#areaseleccionada').html("A")
+			$('.areaseleccionada').html("A")
 		}
 		if(area==1){
 			ProbCon = 0.3*0.8*ponB*0.85+0.3*0.2*ponB*0.7+0.7*0.8*ponB*0.85+0.7*0.2*ponB*0.7;
 			current_score = 1;
+			ProbaAreaEncestar = ponB*ProbCon/probEncestar;
+			$('#probAreaEncesto').html(ProbaAreaEncestar);
 			createBall();
-			$('#areaseleccionada').html("B")
+			$('.areaseleccionada').html("B")
 		}
 		if(area==2){
 			ProbCon = 0.3*0.8*ponC*0.8+0.3*0.2*ponC*0.6+0.7*0.8*ponC*0.8+0.7*0.2*ponC*0.6;
 			current_score = 2;
+
+			ProbaAreaEncestar = ponC*ProbCon/probEncestar;
+			$('#probAreaEncesto').html(ProbaAreaEncestar);
+
+			
 			createBall();
-			$('#areaseleccionada').html("C")
+			$('.areaseleccionada').html("C")
 		}
 		if(area==3){
 			ProbCon = 0.3*0.8*ponD*0.6+0.3*0.2*ponD*0.5+0.7*0.8*ponD*0.6+0.7*0.2*ponD*0.5;
 			current_score = 3;
+			ProbaAreaEncestar = ponD*ProbCon/probEncestar;
+			$('#probAreaEncesto').html(ProbaAreaEncestar);
 			createBall();
-			$('#areaseleccionada').html("D")
+			$('.areaseleccionada').html("D")
 		}
 		if(estatura>=1.7){
 			$('#probExperienciaEstatura').html("No posee una altura menor a 1.7");
@@ -413,6 +430,15 @@ function launch(x_traj) {
 			$('#probExperienciaEstatura').html(probExpeEstatura);
 
 		}
+		if(!experiencia){
+			probAcumFallo = 0.3*0.2*ponA*0.2+0.3*0.2*ponB*0.3+0.3*0.2*ponC*0.4+0.3*0.2*ponD*0.5+0.7*0.2*ponA*0.2+
+			0.7*0.2*ponB*0.3+0.7*0.2*ponC*0.4+0.7*0.2*ponD*0.5;
+			ProbaFalloExp = ProbFallar*probAcumFallo/0.2;
+			$('#probFalladoExperiencia').html(ProbaFalloExp);
+		}else{
+			$('#probFalladoExperiencia').html("El jugador si posee experiencia!");
+		}
+		
 		
 		
 		$('#probEncestar').html(probEncestar);
